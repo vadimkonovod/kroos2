@@ -7,37 +7,27 @@ function createEvent() {
   return event.save();
 }
 
-function regme(bot, msg) {
-  const now = new Date();
-
+function regme(bot, { chat, from }) {
   Event
-    .findOne({ date: { $gt: now } })
-    .then(event => event || createEvent())
-    .then(event => {
-      const users = new Set([...event.users, msg.from.username]);
-      event.users = Array.from(users);
-
-      return event.save();
-    })
-    .then(event => {
-      bot.sendMessage(msg.chat.id, 'You have been successfully registered.\n' + event.users.join(', '));
-    })
-    .catch(err => {
-      console.log(err);
-    });
+    .findNextOrCreate()
+    .then(event => event.addUser(from.username))
+    .then(event => bot.sendMessage(chat.id, 'You have been successfully registered.\n' + event.usersToString()))
+    .catch(console.error);
 }
 
-function status(bot, msg) {
-  const now = new Date();
-
+function status(bot, { chat }) {
   Event
-    .findOne({ date: { $gt: now } })
-    .then(event => {
-      event = event || createEvent();
-      const users = event.users && event.users.join(', ');
+    .findNextOrCreate()
+    .then(event => bot.sendMessage(chat.id, event.usersToString()))
+    .catch(console.error);
+}
 
-      bot.sendMessage(msg.chat.id, users || 'Users not found');
-    });
+function dropoff(bot, { chat, from }) {
+  Event
+    .findNextOrCreate()
+    .then(event => event.removeUser(from.username))
+    .then(event => bot.sendMessage(chat.id, 'You have been successfully unregistered.\n' + event.usersToString()))
+    .catch(console.error);
 }
 
 function init(url, token) {
@@ -45,8 +35,9 @@ function init(url, token) {
 
   bot.setWebHook(`${url}/bot${token}`);
 
-  bot.onText(/\/regme/, (...args) => regme(bot, ...args));
-  bot.onText(/\/status/, (...args) => status(bot, ...args));
+  bot.onText(/\/regme/, regme.bind(this, bot));
+  bot.onText(/\/status/, status.bind(this, bot));
+  bot.onText(/\/dropoff/, dropoff.bind(this, bot));
 
   return bot;
 }

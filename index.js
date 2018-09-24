@@ -1,12 +1,21 @@
-const TOKEN = '624841668:AAEf5KbBf-sY8Qqd9gXbLZGW7uw2qBfkAUw';
-const URL = 'https://d4ee729a.ngrok.io';
-const PORT = 3000;
-
+const config = require('dotenv').config;
 const express = require('express');
 const bodyParser = require('body-parser');
 const initBot = require('./bot').init;
 const Event = require('./event').Event;
 const mongoose = require('mongoose');
+
+config();
+
+const {
+  URL,
+  PORT,
+  TOKEN,
+  MONGO_HOST,
+  MONGO_PORT,
+  MONGO_USER,
+  MONGO_PASS,
+} = process.env;
 
 const bot = initBot(URL, TOKEN);
 const app = express();
@@ -22,11 +31,9 @@ app.post(`/bot${TOKEN}`, (req, res) => {
 app.listen(PORT, console.log.bind(console, `Express server is listening on ${PORT}`));
 
 // DB
-mongoose.connect('mongodb://root:football@localhost:27017/admin', { useNewUrlParser: true });
+mongoose.connect(`mongodb://${MONGO_USER}:${MONGO_PASS}@${MONGO_HOST}:${MONGO_PORT}/admin`, { useNewUrlParser: true });
 
 const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
 
-db.once('open', function () {
-  console.log('Mongo works');
-});
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', () => console.log('Mongo started'));

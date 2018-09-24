@@ -1,7 +1,15 @@
 # kroos2
 
 **Build**
-`npm install`
+```
+npm install
+```
 
 **Run**
-`npm run bot`
+```
+docker-compose up -d
+cp .env.example .env
+# change .env
+# run proxy
+npm run bot
+```
