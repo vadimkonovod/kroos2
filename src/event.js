@@ -1,12 +1,14 @@
 const mongoose = require('mongoose');
+const { defaultEvent } = require('./venue');
+const { getNextDate } = require('./datetime');
 
 const eventSchema = new mongoose.Schema({
   users: Array,
-  date: Date,
+  date: Date
 });
 
 eventSchema.statics.createNext = function () {
-  const event = new Event({ date: new Date(2018, 9, 30) });
+  const event = new Event({ date: getNextDate(defaultEvent.week_day) });
 
   return event.save();
 };
@@ -32,8 +34,10 @@ eventSchema.methods.removeUser = function (username) {
   return this.save();
 };
 
-eventSchema.methods.usersToString = function () {
-  return this.users && this.users.length ? this.users.join(', ') : 'Event doesn\'t have any users';
+eventSchema.methods.usersToMessage = function () {
+  if (this.users && this.users.length) return 'Event doesn\'t have any users';
+
+  return this.users.join('\n ');
 };
 
 const Event = mongoose.model('Event', eventSchema);

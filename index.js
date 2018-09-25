@@ -10,7 +10,7 @@ const {
   URL,
   PORT,
   TOKEN,
-  MONGO_NODE,
+  MONGO_NODE
 } = process.env;
 
 const bot = init(URL, TOKEN);
