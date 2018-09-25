@@ -19,12 +19,10 @@ const EventSchema = new mongoose.Schema({
 });
 
 EventSchema.statics.createNext = function () {
-  const data = {
-    date: getNextDate(defaultEvent.week_day),
-    price: defaultEvent.price
-  };
+  const { price, week_day, hours, minutes } = defaultEvent;
+  const date = getNextDate(week_day, hours, minutes);
 
-  return (new Event(data)).save();
+  return (new Event({ date, price })).save();
 };
 
 EventSchema.statics.findNextOrCreate = function () {

@@ -13,9 +13,9 @@ function regme(bot, { chat, from }) {
 function status(bot, { chat }) {
   Event
     .findNextOrCreate()
-    .then(event => `Next event planned on ${toHumanReadable(event.date)}.\n` +
-      `Price: ${event.price}, per person: ${event.pricePerUser()}\n` +
-      `Participants: ${event.usersToMessage()}`
+    .then(event => `${toHumanReadable(event.date)}\n` +
+      `${event.price} BYN – per person ${event.pricePerUser()} BYN\n\n` +
+      `Participants ${this.users.length}:\n${event.usersToMessage()}`
     )
     .then(message => bot.sendMessage(chat.id, message))
     .catch(console.error);

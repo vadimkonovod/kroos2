@@ -4,12 +4,15 @@ function incrementDate(datetime) {
   return datetime;
 }
 
-function getNextDate(day) {
+function getNextDate(day, hours, minutes) {
   if (!Number.isInteger(day) || !(0 <= day <= 7)) {
     return null;
   }
 
   const date = incrementDate(new Date());
+
+  date.setHours(hours);
+  date.setMinutes(minutes);
 
   while (date.getDay() !== day) {
     incrementDate(date);
@@ -19,7 +22,10 @@ function getNextDate(day) {
 }
 
 function toHumanReadable(date) {
-  return date.toDateString() + ' at ' + date.toTimeString().split(' ')[0];
+  const [weekDay, month, day] = date.toDateString().split(' ');
+  const [time] = date.toTimeString().split(' ');
+
+  return `${weekDay}, ${day} ${month} at ${time}`;
 }
 
 exports.getNextDate = getNextDate;
