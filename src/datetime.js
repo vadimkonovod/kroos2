@@ -13,6 +13,7 @@ function getNextDate(day, hours, minutes) {
 
   date.setHours(hours);
   date.setMinutes(minutes);
+  date.setSeconds(0);
 
   while (date.getDay() !== day) {
     incrementDate(date);
@@ -24,8 +25,9 @@ function getNextDate(day, hours, minutes) {
 function toHumanReadable(date) {
   const [weekDay, month, day] = date.toDateString().split(' ');
   const [time] = date.toTimeString().split(' ');
+  const [hours, minutes] = time.split(':');
 
-  return `${weekDay}, ${day} ${month} at ${time}`;
+  return `${weekDay}, ${day} ${month} at ${hours}:${minutes}`;
 }
 
 exports.getNextDate = getNextDate;
