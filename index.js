@@ -2,6 +2,7 @@ const config = require('dotenv').config;
 const express = require('express');
 const bodyParser = require('body-parser');
 const { init } = require('./src/bot');
+const { Venue } = require('./src/venue');
 const mongoose = require('mongoose');
 
 config();
@@ -32,4 +33,8 @@ mongoose.connect(`mongodb://${MONGO_NODE}`, { useNewUrlParser: true });
 const db = mongoose.connection;
 
 db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', () => console.log('Mongo started'));
+db.once('open', () => {
+  console.log('Mongo started');
+
+  Venue.initDefault().then(() => console.log('Venue created'));
+});

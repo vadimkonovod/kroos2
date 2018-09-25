@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
-const { defaultEvent } = require('./venue');
 const { getNextDate } = require('./datetime');
 const { UserSchema } = require('./user');
+const { Venue } = require('./venue');
 
 const EventSchema = new mongoose.Schema({
   users: {
@@ -18,8 +18,8 @@ const EventSchema = new mongoose.Schema({
   }
 });
 
-EventSchema.statics.createNext = function () {
-  const { price, week_day, hours, minutes } = defaultEvent;
+EventSchema.statics.createNext = async function () {
+  const { price, week_day, hours, minutes } = await Venue.findOne();
   const date = getNextDate(week_day, hours, minutes);
 
   return (new Event({ date, price })).save();
@@ -31,6 +31,22 @@ EventSchema.statics.findNextOrCreate = function () {
   return this
     .findOne({ date: { $gt: now } })
     .then(event => event || this.createNext());
+};
+
+EventSchema.statics.updatePrice = async function (price) {
+  const event = await Event.findNextOrCreate();
+
+  event.price = price;
+
+  return event.save();
+};
+
+EventSchema.statics.updateDay = async function (day) {
+  const event = await Event.findNextOrCreate();
+
+  event.day = day;
+
+  return event.save();
 };
 
 EventSchema.methods.addUser = function ({ id, username, first_name, last_name }) {
