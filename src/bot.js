@@ -31,6 +31,8 @@ function setPrice(bot, { text, chat }) {
 
   if (isNaN(price) || price < 1) {
     bot.sendMessage(chat.id, `${text} is not valid for price`);
+
+    return;
   }
 
   Venue.findOneAndUpdate({}, { price })
@@ -44,6 +46,8 @@ function setDay(bot, { text, chat }) {
 
   if (isNaN(day) || !(0 <= day <= 7)) {
     bot.sendMessage(chat.id, `${text} is not valid for day`);
+
+    return;
   }
 
   Venue.findOneAndUpdate({}, { week_day: day })
