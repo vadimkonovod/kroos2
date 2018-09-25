@@ -9,7 +9,7 @@ function statusMsg(event) {
   const hasUsers = event.users.length > 0;
 
   const priceMsg = `${event.price} BYN` + (hasUsers ? `- per person ${event.pricePerUser()}` : '');
-  const participantsMsg = hasUsers ? `Participants ${event.users.length}` + usersMsg(event) : 'Event doesn\'t have any users';
+  const participantsMsg = hasUsers ? `Participants ${event.users.length}\n` + usersMsg(event) : 'Event doesn\'t have any users';
 
   return dateMsg(event.date) + '\n' + priceMsg + '\n\n' + participantsMsg;
 }
