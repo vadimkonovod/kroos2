@@ -1,23 +1,19 @@
 const Event = require('./event').Event;
 const TelegramBot = require('node-telegram-bot-api');
-const { toHumanReadable } = require('./datetime');
+const { statusMsg, usersMsg } = require('./templates');
 
 function regme(bot, { chat, from }) {
   Event
     .findNextOrCreate()
     .then(event => event.addUser(from))
-    .then(event => bot.sendMessage(chat.id, 'You have been successfully registered.\n' + event.usersToMessage()))
+    .then(event => bot.sendMessage(chat.id, 'You have been successfully registered.\n' + usersMsg(event)))
     .catch(console.error);
 }
 
 function status(bot, { chat }) {
   Event
     .findNextOrCreate()
-    .then(event => `${toHumanReadable(event.date)}\n` +
-      `${event.price} BYN – per person ${event.pricePerUser()} BYN\n\n` +
-      `Participants ${event.users.length}\n${event.usersToMessage()}`
-    )
-    .then(message => bot.sendMessage(chat.id, message))
+    .then(event => bot.sendMessage(chat.id, statusMsg(event)))
     .catch(console.error);
 }
 
@@ -25,7 +21,7 @@ function dropoff(bot, { chat, from }) {
   Event
     .findNextOrCreate()
     .then(event => event.removeUser(from))
-    .then(event => bot.sendMessage(chat.id, 'You have been successfully unregistered.\n' + event.usersToMessage()))
+    .then(event => bot.sendMessage(chat.id, 'You have been successfully unregistered.\n' + usersMsg(event)))
     .catch(console.error);
 }
 

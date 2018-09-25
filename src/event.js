@@ -46,14 +46,6 @@ EventSchema.methods.removeUser = function ({ id }) {
   return this.save();
 };
 
-EventSchema.methods.usersToMessage = function () {
-  if (this.users.length === 0) return 'Event doesn\'t have any users';
-
-  const names = this.users.map(user => `${user.first_name} ${user.last_name}`.trim());
-
-  return names.join('\n');
-};
-
 EventSchema.methods.pricePerUser = function () {
   const number = this.users.length;
 

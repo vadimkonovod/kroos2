@@ -22,13 +22,4 @@ function getNextDate(day, hours, minutes) {
   return date;
 }
 
-function toHumanReadable(date) {
-  const [weekDay, month, day] = date.toDateString().split(' ');
-  const [time] = date.toTimeString().split(' ');
-  const [hours, minutes] = time.split(':');
-
-  return `${weekDay}, ${day} ${month} at ${hours}:${minutes}`;
-}
-
 exports.getNextDate = getNextDate;
-exports.toHumanReadable = toHumanReadable;
