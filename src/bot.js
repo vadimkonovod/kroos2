@@ -1,4 +1,5 @@
-const Event = require('./event').Event;
+const { Event } = require('./event');
+const { Venue } = require('./venue');
 const TelegramBot = require('node-telegram-bot-api');
 const { statusMsg, usersMsg } = require('./templates');
 
