@@ -1,5 +1,7 @@
 function incrementDate(datetime) {
-  return datetime.setDate(datetime.getDate() + 1);
+  datetime.setDate(datetime.getDate() + 1);
+
+  return datetime;
 }
 
 function getNextDate(day) {
@@ -21,4 +23,4 @@ function toHumanReadable(date) {
 }
 
 exports.getNextDate = getNextDate;
-exports.toHumanReadeble = toHumanReadable;
+exports.toHumanReadable = toHumanReadable;

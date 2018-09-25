@@ -1,19 +1,33 @@
 const mongoose = require('mongoose');
 const { defaultEvent } = require('./venue');
 const { getNextDate } = require('./datetime');
+const { UserSchema } = require('./user');
 
-const eventSchema = new mongoose.Schema({
-  users: Array,
-  date: Date
+const EventSchema = new mongoose.Schema({
+  users: {
+    type: [UserSchema],
+    default: []
+  },
+  date: {
+    type: Date,
+    required: true
+  },
+  price: {
+    type: Number,
+    required: true
+  }
 });
 
-eventSchema.statics.createNext = function () {
-  const event = new Event({ date: getNextDate(defaultEvent.week_day) });
+EventSchema.statics.createNext = function () {
+  const data = {
+    date: getNextDate(defaultEvent.week_day),
+    price: defaultEvent.price
+  };
 
-  return event.save();
+  return (new Event(data)).save();
 };
 
-eventSchema.statics.findNextOrCreate = function () {
+EventSchema.statics.findNextOrCreate = function () {
   const now = new Date();
 
   return this
@@ -21,25 +35,33 @@ eventSchema.statics.findNextOrCreate = function () {
     .then(event => event || this.createNext());
 };
 
-eventSchema.methods.addUser = function (username) {
-  const users = this.users.filter(name => name !== username);
-  this.users = users.concat(username);
+EventSchema.methods.addUser = function ({ id, username, first_name, last_name }) {
+  const users = this.users.filter(user => user.id !== id);
+  this.users = users.concat({ id, username, first_name, last_name });
 
   return this.save();
 };
 
-eventSchema.methods.removeUser = function (username) {
-  this.users = this.users.filter(name => name !== username);
+EventSchema.methods.removeUser = function ({ id }) {
+  this.users = this.users.filter(user => user.id !== id);
 
   return this.save();
 };
 
-eventSchema.methods.usersToMessage = function () {
-  if (this.users && this.users.length) return 'Event doesn\'t have any users';
+EventSchema.methods.usersToMessage = function () {
+  if (this.users.length === 0) return 'Event doesn\'t have any users';
 
-  return this.users.join('\n ');
+  const names = this.users.map(user => `${user.first_name} ${user.last_name}`.trim());
+
+  return names.join('\n');
 };
 
-const Event = mongoose.model('Event', eventSchema);
+EventSchema.methods.pricePerUser = function () {
+  const number = this.users.length;
+
+  return number === 0 ? null : this.price / number;
+};
+
+const Event = mongoose.model('Event', EventSchema);
 
 exports.Event = Event;

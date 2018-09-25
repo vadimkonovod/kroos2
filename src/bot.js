@@ -5,7 +5,7 @@ const { toHumanReadable } = require('./datetime');
 function regme(bot, { chat, from }) {
   Event
     .findNextOrCreate()
-    .then(event => event.addUser(from.username))
+    .then(event => event.addUser(from))
     .then(event => bot.sendMessage(chat.id, 'You have been successfully registered.\n' + event.usersToMessage()))
     .catch(console.error);
 }
@@ -13,7 +13,10 @@ function regme(bot, { chat, from }) {
 function status(bot, { chat }) {
   Event
     .findNextOrCreate()
-    .then(event => `Next event planned on ${toHumanReadable(event.date)}.\n Participants: ${event.usersToMessage()}`)
+    .then(event => `Next event planned on ${toHumanReadable(event.date)}.\n` +
+      `Price: ${event.price}, per person: ${event.pricePerUser()}\n` +
+      `Participants: ${event.usersToMessage()}`
+    )
     .then(message => bot.sendMessage(chat.id, message))
     .catch(console.error);
 }
@@ -21,7 +24,7 @@ function status(bot, { chat }) {
 function dropoff(bot, { chat, from }) {
   Event
     .findNextOrCreate()
-    .then(event => event.removeUser(from.username))
+    .then(event => event.removeUser(from))
     .then(event => bot.sendMessage(chat.id, 'You have been successfully unregistered.\n' + event.usersToMessage()))
     .catch(console.error);
 }
