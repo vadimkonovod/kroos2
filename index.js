@@ -1,8 +1,7 @@
 const config = require('dotenv').config;
 const express = require('express');
 const bodyParser = require('body-parser');
-const initBot = require('./bot').init;
-const Event = require('./event').Event;
+const { init } = require('./src/bot');
 const mongoose = require('mongoose');
 
 config();
@@ -11,13 +10,10 @@ const {
   URL,
   PORT,
   TOKEN,
-  MONGO_HOST,
-  MONGO_PORT,
-  MONGO_USER,
-  MONGO_PASS,
+  MONGO_NODE,
 } = process.env;
 
-const bot = initBot(URL, TOKEN);
+const bot = init(URL, TOKEN);
 const app = express();
 
 // APP
@@ -31,7 +27,7 @@ app.post(`/bot${TOKEN}`, (req, res) => {
 app.listen(PORT, console.log.bind(console, `Express server is listening on ${PORT}`));
 
 // DB
-mongoose.connect(`mongodb://${MONGO_USER}:${MONGO_PASS}@${MONGO_HOST}:${MONGO_PORT}/admin`, { useNewUrlParser: true });
+mongoose.connect(`mongodb://${MONGO_NODE}`, { useNewUrlParser: true });
 
 const db = mongoose.connection;
 

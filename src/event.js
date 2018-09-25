@@ -5,23 +5,23 @@ const eventSchema = new mongoose.Schema({
   date: Date,
 });
 
+eventSchema.statics.createNext = function () {
+  const event = new Event({ date: new Date(2018, 9, 30) });
+
+  return event.save();
+};
+
 eventSchema.statics.findNextOrCreate = function () {
   const now = new Date();
 
   return this
     .findOne({ date: { $gt: now } })
-    .then(event => {
-      if (event) return event;
-
-      event = new Event({ date: new Date(2018, 9, 30) });
-
-      return event.save();
-    });
+    .then(event => event || this.createNext());
 };
 
 eventSchema.methods.addUser = function (username) {
-  const users = this.users.concat(username);
-  this.users = Array.from(new Set(users));
+  const users = this.users.filter(name => name !== username);
+  this.users = users.concat(username);
 
   return this.save();
 };

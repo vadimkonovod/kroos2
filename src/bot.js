@@ -1,12 +1,6 @@
 const Event = require('./event').Event;
 const TelegramBot = require('node-telegram-bot-api');
 
-function createEvent() {
-  const event = new Event({ date: new Date(2018, 9, 30) });
-
-  return event.save();
-}
-
 function regme(bot, { chat, from }) {
   Event
     .findNextOrCreate()
