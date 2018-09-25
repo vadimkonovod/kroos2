@@ -15,7 +15,7 @@ function status(bot, { chat }) {
     .findNextOrCreate()
     .then(event => `${toHumanReadable(event.date)}\n` +
       `${event.price} BYN – per person ${event.pricePerUser()} BYN\n\n` +
-      `Participants ${this.users.length}:\n${event.usersToMessage()}`
+      `Participants ${event.users.length}:\n${event.usersToMessage()}`
     )
     .then(message => bot.sendMessage(chat.id, message))
     .catch(console.error);
