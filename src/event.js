@@ -44,7 +44,7 @@ EventSchema.statics.updatePrice = async function (price) {
 EventSchema.statics.updateDay = async function (day) {
   const event = await Event.findNextOrCreate();
 
-  event.day = day;
+  event.date = getNextDate(day, event.date.getHours(), event.date.getMinutes());
 
   return event.save();
 };

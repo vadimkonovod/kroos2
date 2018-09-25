@@ -28,7 +28,7 @@ app.post(`/bot${TOKEN}`, (req, res) => {
 app.listen(PORT, console.log.bind(console, `Express server is listening on ${PORT}`));
 
 // DB
-mongoose.connect(`mongodb://${MONGO_NODE}`, { useNewUrlParser: true });
+mongoose.connect(`mongodb://${MONGO_NODE}`, { useCreateIndex: true, useNewUrlParser: true });
 
 const db = mongoose.connection;
 

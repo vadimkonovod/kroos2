@@ -27,10 +27,10 @@ function dropoff(bot, { chat, from }) {
 }
 
 function setPrice(bot, { text, chat }) {
-  const price = +text;
+  const price = +(text.split(' ')[1]);
 
   if (isNaN(price) || price < 1) {
-    bot.sendMessage(chat.id, `${text} is not valid for price`);
+    bot.sendMessage(chat.id, `${price} is not valid for price`);
 
     return;
   }
@@ -42,7 +42,7 @@ function setPrice(bot, { text, chat }) {
 }
 
 function setDay(bot, { text, chat }) {
-  const day = +text;
+  const day = +(text.split(' ')[1]);
 
   if (isNaN(day) || !(0 <= day <= 7)) {
     bot.sendMessage(chat.id, `${text} is not valid for day`);
@@ -51,7 +51,7 @@ function setDay(bot, { text, chat }) {
   }
 
   Venue.findOneAndUpdate({}, { week_day: day })
-    .then(() => Event.updateDay())
+    .then(() => Event.updateDay(day))
     .then(() => bot.sendMessage(chat.id, 'Week day was successfully updated'))
     .catch(console.error)
 }
