@@ -41,7 +41,7 @@ function setPrice(bot, { text, chat }) {
     .catch(console.error)
 }
 
-function setDay(bot, { text, chat }) {
+function setWeekday(bot, { text, chat }) {
   const day = +(text.split(' ')[1]);
 
   if (isNaN(day) || !(0 <= day <= 7)) {
@@ -52,7 +52,7 @@ function setDay(bot, { text, chat }) {
 
   Venue.findOneAndUpdate({}, { week_day: day })
     .then(() => Event.updateDay(day))
-    .then(() => bot.sendMessage(chat.id, 'Week day was successfully updated'))
+    .then(() => bot.sendMessage(chat.id, 'Weekday was successfully updated'))
     .catch(console.error)
 }
 
@@ -65,7 +65,7 @@ function init(url, token) {
   bot.onText(/\/status/, status.bind(this, bot));
   bot.onText(/\/dropoff/, dropoff.bind(this, bot));
   bot.onText(/\/set_price/, setPrice.bind(this, bot));
-  bot.onText(/\/set_day/, setDay.bind(this, bot));
+  bot.onText(/\/set_weekday/, setWeekday.bind(this, bot));
 
   return bot;
 }
