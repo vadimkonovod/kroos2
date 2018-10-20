@@ -14,7 +14,7 @@ function regme(bot, { chat, from }) {
 function status(bot, { chat }) {
   Event
     .findNextOrCreate()
-    .then(event => bot.sendMessage(chat.id, statusMsg(event)))
+    .then(event => bot.sendMessage(chat.id, statusMsg(event), {"parse_mode": "Markdown"}))
     .catch(console.error);
 }
 
