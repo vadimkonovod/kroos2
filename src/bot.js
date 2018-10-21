@@ -1,15 +1,7 @@
 const { Event } = require('./event');
 const { Venue } = require('./venue');
 const TelegramBot = require('node-telegram-bot-api');
-const { statusMsg, usersMsg } = require('./templates');
-
-function regme(bot, { chat, from }) {
-  Event
-    .findNextOrCreate()
-    .then(event => event.addUser(from))
-    .then(event => bot.sendMessage(chat.id, 'You have been successfully registered.\n' + usersMsg(event)))
-    .catch(console.error);
-}
+const { statusMsg } = require('./templates');
 
 function status(bot, { chat }) {
   Event
@@ -18,11 +10,19 @@ function status(bot, { chat }) {
     .catch(console.error);
 }
 
-function dropoff(bot, { chat, from }) {
+function regme(bot, { chat, from, message_id}) {
+  Event
+    .findNextOrCreate()
+    .then(event => event.addUser(from))
+    .then(event => bot.sendMessage(chat.id, statusMsg(event), {"parse_mode": "Markdown", "reply_to_message_id": message_id}))
+    .catch(console.error);
+}
+
+function dropoff(bot, { chat, from, message_id}) {
   Event
     .findNextOrCreate()
     .then(event => event.removeUser(from))
-    .then(event => bot.sendMessage(chat.id, 'You have been successfully unregistered.\n' + usersMsg(event)))
+    .then(event => bot.sendMessage(chat.id, statusMsg(event), {"parse_mode": "Markdown", "reply_to_message_id": message_id}))
     .catch(console.error);
 }
 
