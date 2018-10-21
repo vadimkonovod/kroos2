@@ -1,3 +1,10 @@
+function statusMsg(event) {
+  return '*Date:* ' + dateMsg(event.date) + '\n' +
+  '*Quantity:* ' + event.users.length + '\n' +
+  '*Price per man:* ' + pricePerManMsg(event) + '\n' +
+  '*Squad:* ' + participantsMsg(event);
+}
+
 function dateMsg(date) {
   const [weekDay, month, day] = date.toDateString().split(' ');
   const time = date.toTimeString().slice(0, 5);
@@ -5,17 +12,15 @@ function dateMsg(date) {
   return `${weekDay}, ${day} ${month} at ${time}`;
 }
 
-function statusMsg(event) {
+function pricePerManMsg(event) {
   const hasUsers = event.users.length > 0;
+  const pricePerUser = hasUsers ? event.pricePerUser().toFixed(2) + ` BYN` : 'n/a';
 
-  const priceMsg = `${event.price} BYN` + (hasUsers ? ` – per person ${event.pricePerUser().toFixed(2)} BYN` : '');
-  const participantsMsg = hasUsers ? `Participants ${event.users.length}\n` + usersMsg(event) : 'Event doesn\'t have any users';
-
-  return dateMsg(event.date) + '\n' + priceMsg + '\n\n' + participantsMsg;
+  return pricePerUser;
 }
 
-function usersMsg(event) {
-  if (event.users.length === 0) return 'Event doesn\'t have any users';
+function participantsMsg(event) {
+  if (event.users.length === 0) return '';
 
   const names = event.users.map(user => `${user.first_name} ${user.last_name}`.trim());
 
@@ -23,4 +28,3 @@ function usersMsg(event) {
 }
 
 exports.statusMsg = statusMsg;
-exports.usersMsg = usersMsg;
