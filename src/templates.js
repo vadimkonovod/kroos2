@@ -22,9 +22,16 @@ function pricePerManMsg(event) {
 function participantsMsg(event) {
   if (event.users.length === 0) return '';
 
-  const names = event.users.map(user => `${user.first_name} ${user.last_name}`.trim());
+  const names = event.users.map(user => getConcatenatedFullName(user));
 
-  return names.join('\n');
+  return names.join(', ');
+}
+
+function getConcatenatedFullName(user) {
+  if (user.last_name)
+    return user.first_name.slice(0, 1) + '. ' + user.last_name;
+  else
+    return user.first_name;
 }
 
 exports.statusMsg = statusMsg;
